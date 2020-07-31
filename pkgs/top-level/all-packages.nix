@@ -94,6 +94,8 @@ in
 
   genericUpdater = callPackage ../common-updater/generic-updater.nix { };
 
+  nix-update-script = callPackage ../common-updater/nix-update.nix { };
+
   ### Push NixOS tests inside the fixed point
 
   nixosTests = import ../../nixos/tests/all-tests.nix {
@@ -1911,6 +1913,8 @@ in
 
   gdrive = callPackage ../applications/networking/gdrive { };
 
+  go-rice = callPackage ../tools/misc/go.rice {};
+
   go-2fa = callPackage ../tools/security/2fa {};
 
   go-dependency-manager = callPackage ../development/tools/gdm { };
@@ -2010,6 +2014,8 @@ in
   hopper = qt5.callPackage ../development/tools/analysis/hopper {};
 
   hr = callPackage ../applications/misc/hr { };
+
+  humioctl = callPackage ../applications/logging/humioctl {};
 
   hyx = callPackage ../tools/text/hyx { };
 
@@ -2520,6 +2526,8 @@ in
   };
 
   cemu = qt5.callPackage ../applications/science/math/cemu { };
+
+  isolyzer = callPackage ../tools/cd-dvd/isolyzer { };
 
   isomd5sum = callPackage ../tools/cd-dvd/isomd5sum { };
 
@@ -5535,6 +5543,8 @@ in
 
   ngrep = callPackage ../tools/networking/ngrep { };
 
+  neuron-notes = haskell.lib.justStaticExecutables (haskell.lib.generateOptparseApplicativeCompletion "neuron" haskellPackages.neuron);
+
   ngrok = ngrok-2;
 
   ngrok-2 = callPackage ../tools/networking/ngrok-2 { };
@@ -5548,6 +5558,8 @@ in
   nomad = callPackage ../applications/networking/cluster/nomad { };
 
   notable = callPackage ../applications/misc/notable { };
+
+  nvchecker = with python3Packages; toPythonApplication nvchecker;
 
   miller = callPackage ../tools/text/miller { };
 
@@ -6352,6 +6364,9 @@ in
 
   rdma-core = callPackage ../os-specific/linux/rdma-core { };
 
+
+  real_time_config_quick_scan = callPackage ../applications/audio/real_time_config_quick_scan { };
+
   react-native-debugger = callPackage ../development/tools/react-native-debugger { };
 
   read-edid = callPackage ../os-specific/linux/read-edid { };
@@ -6391,6 +6406,8 @@ in
   recutils = callPackage ../tools/misc/recutils { };
 
   recoll = callPackage ../applications/search/recoll { };
+
+  redoc-cli = nodePackages.redoc-cli;
 
   reflex = callPackage ../development/tools/reflex { };
 
@@ -7187,12 +7204,7 @@ in
     inherit (darwin.apple_sdk.frameworks) Foundation;
   };
 
-  tor = callPackage ../tools/security/tor {
-    # remove this, when libevent's openssl is upgraded to 1_1_0 or newer.
-    libevent = libevent.override {
-      sslSupport = false;
-    };
-  };
+  tor = callPackage ../tools/security/tor { };
 
   tor-arm = callPackage ../tools/security/tor/tor-arm.nix { };
 
@@ -7344,6 +7356,8 @@ in
 
   uget-integrator = callPackage ../tools/networking/uget-integrator { };
 
+  ugrep = callPackage ../tools/text/ugrep { };
+
   uif2iso = callPackage ../tools/cd-dvd/uif2iso { };
 
   umlet = callPackage ../tools/misc/umlet { };
@@ -7415,6 +7429,8 @@ in
   vcs_query = callPackage ../tools/misc/vcs_query { };
 
   vcstool = callPackage ../development/tools/vcstool { };
+
+  vend = callPackage ../development/tools/vend { };
 
   verilator = callPackage ../applications/science/electronics/verilator {};
 
@@ -9294,7 +9310,6 @@ in
   rocm-opencl-icd = callPackage ../development/libraries/rocm-opencl-icd { };
 
   rocm-opencl-runtime = callPackage ../development/libraries/rocm-opencl-runtime {
-    stdenv = overrideCC stdenv llvmPackages_rocm.clang;
     inherit (llvmPackages_rocm) clang clang-unwrapped lld llvm;
   };
 
@@ -9314,10 +9329,14 @@ in
   rust_1_44 = callPackage ../development/compilers/rust/1_44.nix {
     inherit (darwin.apple_sdk.frameworks) CoreFoundation Security;
   };
-  rust = rust_1_44;
+  rust_1_45 = callPackage ../development/compilers/rust/1_45.nix {
+    inherit (darwin.apple_sdk.frameworks) CoreFoundation Security;
+  };
+  rust = rust_1_45;
 
   rustPackages_1_44 = rust_1_44.packages.stable;
-  rustPackages = rustPackages_1_44;
+  rustPackages_1_45 = rust_1_45.packages.stable;
+  rustPackages = rustPackages_1_45;
 
   inherit (rustPackages) cargo clippy rustc rustPlatform;
   inherit (rust) makeRustPlatform;
@@ -9620,6 +9639,8 @@ in
   dhall-bash = haskell.lib.justStaticExecutables haskellPackages.dhall-bash;
 
   dhall-json = haskell.lib.justStaticExecutables haskellPackages.dhall-json;
+
+  dhall-lsp-server = haskell.lib.justStaticExecutables haskellPackages.dhall-lsp-server;
 
   dhall-text = haskell.lib.justStaticExecutables haskellPackages.dhall-text;
 
@@ -10893,6 +10914,8 @@ in
 
   mkdocs = callPackage ../development/tools/documentation/mkdocs { };
 
+  mockgen = callPackage ../development/tools/mockgen { };
+
   modd = callPackage ../development/tools/modd { };
 
   msgpack-tools = callPackage ../development/tools/msgpack-tools { };
@@ -11416,6 +11439,8 @@ in
 
   amdvlk = callPackage ../development/libraries/amdvlk {};
 
+  aml = callPackage ../development/libraries/aml { };
+
   amrnb = callPackage ../development/libraries/amrnb { };
 
   amrwb = callPackage ../development/libraries/amrwb { };
@@ -11449,8 +11474,6 @@ in
   arrayfire = callPackage ../development/libraries/arrayfire {};
 
   arrow-cpp = callPackage ../development/libraries/arrow-cpp ({
-    # Workaround until #91984 is in, this will need to be removed later.
-    zstd = zstd.override { enableShared = false; };
   } // stdenv.lib.optionalAttrs (stdenv.hostPlatform.isi686 && stdenv.cc.isGNU) {
     stdenv = overrideCC stdenv buildPackages.gcc6; # hidden symbol `__divmoddi4'
   });
@@ -12069,6 +12092,7 @@ in
   gf2x = callPackage ../development/libraries/gf2x {};
 
   gd = callPackage ../development/libraries/gd {
+    automake = automake115x;
     libtiff = null;
     libXpm = null;
   };
@@ -14144,6 +14168,7 @@ in
   };
 
   nss = lowPrio (callPackage ../development/libraries/nss { });
+  nss_3_44 = lowPrio (callPackage ../development/libraries/nss/3.44.nix { });
   nssTools = nss.tools;
 
   nss_wrapper = callPackage ../development/libraries/nss_wrapper { };
@@ -14247,6 +14272,8 @@ in
   openldap = callPackage ../development/libraries/openldap { };
 
   opencolorio = callPackage ../development/libraries/opencolorio { };
+
+  opendmarc = callPackage ../development/libraries/opendmarc { };
 
   ois = callPackage ../development/libraries/ois {};
 
@@ -15522,7 +15549,6 @@ in
 
   zlog = callPackage ../development/libraries/zlog { };
 
-  zeromq3 = callPackage ../development/libraries/zeromq/3.x.nix {};
   zeromq4 = callPackage ../development/libraries/zeromq/4.x.nix {};
   zeromq = zeromq4;
 
@@ -15601,8 +15627,6 @@ in
   junit = callPackage ../development/libraries/java/junit { antBuild = releaseTools.antBuild; };
 
   junixsocket = callPackage ../development/libraries/java/junixsocket { };
-
-  jzmq = callPackage ../development/libraries/java/jzmq { };
 
   lombok = callPackage ../development/libraries/java/lombok { };
 
@@ -16869,6 +16893,8 @@ in
 
   cifs-utils = callPackage ../os-specific/linux/cifs-utils { };
 
+  cm-rgb = python3Packages.callPackage ../tools/system/cm-rgb { };
+
   cpustat = callPackage ../os-specific/linux/cpustat { };
 
   cockroachdb = callPackage ../servers/sql/cockroachdb { };
@@ -16915,9 +16941,7 @@ in
 
   directvnc = callPackage ../os-specific/linux/directvnc { };
 
-  dmraid = callPackage ../os-specific/linux/dmraid {
-    lvm2 = lvm2.override {enable_dmeventd = true;};
-  };
+  dmraid = callPackage ../os-specific/linux/dmraid { lvm2 = lvm2_dmeventd; };
 
   drbd = callPackage ../os-specific/linux/drbd { };
 
@@ -17626,6 +17650,10 @@ in
   lsscsi = callPackage ../os-specific/linux/lsscsi { };
 
   lvm2 = callPackage ../os-specific/linux/lvm2 { };
+  lvm2_dmeventd = callPackage ../os-specific/linux/lvm2 {
+    enableDmeventd = true;
+    enableCmdlib = true;
+  };
 
   mbelib = callPackage ../development/libraries/audio/mbelib { };
 
@@ -17714,6 +17742,8 @@ in
 
   gotags = callPackage ../development/tools/gotags { };
 
+  go-task = callPackage ../development/tools/go-task { };
+
   golint = callPackage ../development/tools/golint { };
 
   golangci-lint = callPackage ../development/tools/golangci-lint { };
@@ -17785,6 +17815,8 @@ in
   pam_ldap = callPackage ../os-specific/linux/pam_ldap { };
 
   pam_mount = callPackage ../os-specific/linux/pam_mount { };
+
+  pam_p11 = callPackage ../os-specific/linux/pam_p11 { };
 
   pam_pgsql = callPackage ../os-specific/linux/pam_pgsql { };
 
@@ -17945,14 +17977,6 @@ in
 
   # standalone cryptsetup generator for systemd
   systemd-cryptsetup-generator = callPackage ../os-specific/linux/systemd/cryptsetup-generator.nix { };
-
-  # In nixos, you can set systemd.package = pkgs.systemd_with_lvm2 to get
-  # LVM2 working in systemd.
-  systemd_with_lvm2 = pkgs.appendToName "with-lvm2" (pkgs.lib.overrideDerivation pkgs.systemd (p: {
-      postInstall = p.postInstall + ''
-        cp "${pkgs.lvm2}/lib/systemd/system-generators/"* $out/lib/systemd/system-generators
-      '';
-  }));
 
   systemd-wait = callPackage ../os-specific/linux/systemd-wait { };
 
@@ -19357,6 +19381,8 @@ in
 
   cloud-print-connector = callPackage ../servers/cloud-print-connector { };
 
+  cloud-hypervisor = callPackage ../applications/virtualization/cloud-hypervisor { };
+
   clp = callPackage ../applications/science/math/clp { };
 
   cmatrix = callPackage ../applications/misc/cmatrix { };
@@ -19824,6 +19850,10 @@ in
 
   FIL-plugins = callPackage ../applications/audio/FIL-plugins { };
 
+  finalfrontier = callPackage ../applications/science/machine-learning/finalfrontier {
+    inherit (darwin.apple_sdk.frameworks) Security;
+  };
+
   flacon = libsForQt5.callPackage ../applications/audio/flacon { };
 
   flexget = callPackage ../applications/networking/flexget { };
@@ -20028,6 +20058,7 @@ in
 
   firefoxPackages = recurseIntoAttrs (callPackage ../applications/networking/browsers/firefox/packages.nix {
     callPackage = pkgs.newScope {
+      inherit (rustPackages_1_44) cargo rustc;
       libpng = libpng_apng;
       python = python2;
       gnused = gnused_422;
@@ -20982,6 +21013,7 @@ in
     harfbuzz = harfbuzz.override {
       withIcu = true; withGraphite2 = true;
     };
+    nss = nss_3_44;
   };
 
   libreoffice-qt = lowPrio (callPackage ../applications/office/libreoffice/wrapper.nix {
@@ -21472,6 +21504,8 @@ in
   nootka = qt5.callPackage ../applications/audio/nootka { };
   nootka-unstable = qt5.callPackage ../applications/audio/nootka/unstable.nix { };
 
+  nwg-launchers = callPackage ../applications/misc/nwg-launchers { };
+
   open-policy-agent = callPackage ../development/tools/open-policy-agent { };
 
   openshift = callPackage ../applications/networking/cluster/openshift { };
@@ -21642,9 +21676,7 @@ in
 
   mypaint-brushes = callPackage ../development/libraries/mypaint-brushes { };
 
-  mythtv = libsForQt5.callPackage ../applications/video/mythtv {
-    libXNVCtrl = linuxPackages.nvidia_x11.settings.libXNVCtrl;
-  };
+  mythtv = libsForQt5.callPackage ../applications/video/mythtv { };
 
   micro = callPackage ../applications/editors/micro { };
 
@@ -22623,6 +22655,8 @@ in
     pythonBindings = true;
   });
 
+  sublime-music = callPackage ../applications/audio/sublime-music { };
+
   subunit = callPackage ../development/libraries/subunit { };
 
   surf = callPackage ../applications/networking/browsers/surf { gtk = gtk2; };
@@ -22768,8 +22802,10 @@ in
   thonny = callPackage ../applications/editors/thonny { };
 
   thunderbird = callPackage ../applications/networking/mailreaders/thunderbird {
+    inherit (rustPackages_1_44) cargo rustc;
     libpng = libpng_apng;
     gtk3Support = true;
+    nss = nss_3_44; # 68.x won't build with newest nss anymore (like firefox-esr-68)
   };
 
   thunderbolt = callPackage ../os-specific/linux/thunderbolt {};
@@ -26382,6 +26418,8 @@ in
   nixfmt = haskell.lib.justStaticExecutables haskellPackages.nixfmt;
 
   nixpkgs-fmt = callPackage ../tools/nix/nixpkgs-fmt { };
+
+  rnix-hashes = callPackage ../tools/nix/rnix-hashes { };
 
   nixos-artwork = callPackage ../data/misc/nixos-artwork { };
   nixos-icons = callPackage ../data/misc/nixos-artwork/icons.nix { };

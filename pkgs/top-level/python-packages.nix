@@ -1713,6 +1713,8 @@ in {
 
   webapp2 = callPackage ../development/python-modules/webapp2 { };
 
+  webdavclient3 = callPackage ../development/python-modules/webdavclient3 { };
+
   wordcloud = callPackage ../development/python-modules/wordcloud { };
 
   wrf-python = callPackage ../development/python-modules/wrf-python { };
@@ -1955,6 +1957,8 @@ in {
 
   backcall = callPackage ../development/python-modules/backcall { };
 
+  backoff = callPackage ../development/python-modules/backoff { };
+
   backports_abc = callPackage ../development/python-modules/backports_abc { };
 
   backports_functools_lru_cache = callPackage ../development/python-modules/backports_functools_lru_cache { };
@@ -2157,6 +2161,8 @@ in {
   datadog = callPackage ../development/python-modules/datadog {};
 
   dataclasses = callPackage ../development/python-modules/dataclasses { };
+
+  dataclasses-json = callPackage ../development/python-modules/dataclasses-json { };
 
   debian = callPackage ../development/python-modules/debian {};
 
@@ -5908,6 +5914,8 @@ in {
   typing = callPackage ../development/python-modules/typing { };
 
   typing-extensions = callPackage ../development/python-modules/typing-extensions { };
+
+  typing-inspect = callPackage ../development/python-modules/typing-inspect { };
 
   typeguard = callPackage ../development/python-modules/typeguard { };
 

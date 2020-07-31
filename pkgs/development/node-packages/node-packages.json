@@ -90,7 +90,6 @@
 , "indium"
 , "insect"
 , "ionic"
-, "ios-deploy"
 , { "iosevka-build-deps": "../../data/fonts/iosevka" }
 , "jake"
 , "javascript-typescript-langserver"
@@ -149,6 +148,7 @@
 , "pyright"
 , "react-native-cli"
 , "react-tools"
+, "redoc-cli"
 , "reveal.js"
 , "rollup"
 , { "rust-analyzer-build-deps": "../../misc/vscode-extensions/rust-analyzer/build-deps" }
